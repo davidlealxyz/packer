@@ -1,0 +1,37 @@
+{
+    "variables": {
+        "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
+        "aws_secret_key": "{{env `AWS_SECRET_KEY`}}"
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "us-east-2",
+        "source_ami": "ami-0ea08f325bd2bbf69",
+        "source_ami_filter": {
+	         "owners": ["679593333241"],
+             "most_recent": true
+        },
+        "instance_type": "t2.micro",
+        "ami_name": "debian_buster {{timestamp}}",
+        "associate_public_ip_address": true,
+        "communicator": "ssh", 
+        "ssh_username": "admin",
+        "ssh_keypair_name": "ssh_key_teamint_davidleal",
+        "ssh_private_key_file":"/home/david/repos/teaminternational_davidleal/ssh_keys/ssh_key_teamint_davidleal"
+    }],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "../ssh_keys/deploy_key_teamint_davidleal.pub",
+            "destination": "~/.ssh/"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "cat ~/.ssh/deploy_key_teamint_davidleal.pub >> ~/.ssh/authorized_keys"
+            ]   
+        }
+    ]
+}
